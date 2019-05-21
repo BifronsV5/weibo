@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block add %}
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background: snow;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    注册
+{% endblock %}
+{% block header %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-2 column">
+                    </div>
+                    <div class="col-md-8 column">
+                        <div style="text-align: center; margin-top: 180px;">
+                            <p style="font-size: 50px;font-family:'DejaVu Sans',serif; ; font-weight:bold">Elphan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row clearfix" style="margin-top: 16px;">
+                    <div class="col-md-6 column">
+                        <div style="margin-top: 10px;border-right-style: solid; border-width: 1px;border-right-color: #999999;margin-right: 30px; margin-top: 20px; height: 300px;">
+                            <img src="{% static 'images/logo.png' %}"
+                                 style="width: 360px; height: 240px;border-radius: 24px; margin-left: 40px;margin-top:20px;box-shadow: 10px 10px 5px #888888;">
+                        </div>
+                    </div>
+                    <div class="col-md-4 column">
+                        <form role="form" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="username">用户名:</label><input type="text"
+                                                                         class="form-control"
+                                                                         id="username" name="username"
+                                                                         placeholder="请输入用户名.."/>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">密码:</label><input type="password"
+                                                                        class="form-control"
+                                                                        id="password" name="password"
+                                                                        placeholder="请输入密码.."/>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">邮箱:</label><input type="text"
+                                                                     class="form-control"
+                                                                     id="email" name="email"
+                                                                     placeholder="请再次输入邮箱.."/>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">手机:</label><input type="text"
+                                                                     class="form-control"
+                                                                     id="phone" name="phone"
+                                                                     placeholder="请再次输入手机号.."/>
+                            </div>
+                            <button type="submit" class="btn btn-default">注册</button>
+                            <span style="margin-left: 30px;">已有账号?去<a href="{% url 'login' %}">登陆</a>!!</span><span
+                            <p style="margin-left: 60px;">{{ message }}</p>
+                        </form>
+                    </div>
+                    <div class="col-md-2 column">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

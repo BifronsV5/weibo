@@ -1,0 +1,134 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block add %}
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .talk_con {
+            width: 600px;
+            height: 500px;
+            border: 1px solid #666;
+            margin: 50px auto 0;
+            background: #f9f9f9;
+        }
+
+        .talk_show {
+            width: 580px;
+            height: 420px;
+            border: 1px solid #666;
+            background: #fff;
+            margin: 10px auto 0;
+            overflow: auto;
+        }
+
+        .talk_input {
+            width: 580px;
+            margin: 10px auto 0;
+        }
+
+        .whotalk {
+            width: 80px;
+            height: 30px;
+            float: left;
+            outline: none;
+        }
+
+        .talk_word {
+            width: 420px;
+            padding: 0px;
+            float: left;
+            margin-left: 30px;
+            outline: none;
+            text-indent: 10px;
+        }
+
+        .talk_sub {
+            width: 56px;
+            float: left;
+            margin-left: 10px;
+        }
+
+        .atalk {
+            margin: 10px;
+        }
+
+        .atalk span {
+            display: inline-block;
+            background: #0181cc;
+            border-radius: 10px;
+            color: #fff;
+            padding: 5px 10px;
+        }
+
+        .btalk {
+            margin: 10px;
+            text-align: right;
+        }
+
+        .btalk span {
+            display: inline-block;
+            background: #ef8201;
+            border-radius: 10px;
+            color: #fff;
+            padding: 5px 10px;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    回复
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="col-md-3"></div>
+                <div class="col-md-4"><h3>对{{ author }}回复</h3></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </div>
+    <div class="talk_con">
+        <div class="talk_show" id="words">
+            {% for foo in personal %}
+                {% if foo.from_user_id == request.session.user.userid %}
+                    <div class="btalk"><img src="/media/{{ foo.from_user.avatar }}" style="width: 30px;height: 30px; margin-right: 4px;"><span
+                            id="bsay">{{ foo.info }}</span></div>
+                {% else %}
+                    <div class="atalk"><img src="/media/{{ foo.from_user.avatar }}" style="width: 30px;height: 30px; margin-right: 4px;"><span
+                            id="asay">{{ foo.info }}</span></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="talk_input">
+            <input type="text" class="talk_word form-control" id="talkwords">
+            <input value="发送" class="talk_sub btn btn-default" id="talksub">
+        </div>
+    </div>
+    <script>
+        $('#talksub').click(function () {
+            var info = $('#talkwords').val();
+            $.ajax({
+                url: '{% url 'send_private' %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'info': info,
+                    'to_user_id': '{{ author.id }}',
+                },
+                datatype: 'json',
+                type: 'post',
+                success: function (data) {
+                    location.reload();
+                    if (data.length > 20) {
+                        location.href = '/login/'
+                    } else {
+                        alert(data);
+                    }
+                },
+                error: function (err) {
+                    console.log('错误信息' + err);
+                }
+            })
+        })
+    </script>
+{% endblock %}

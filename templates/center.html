@@ -1,0 +1,79 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+    个人中心
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-4 column">
+                    </div>
+                    <div class="col-md-4 column">
+                        <div style="text-align: center;">
+                            <img src="/media/{{ user.avatar }}" style="width: 120px;height: 120px;border-radius: 60px;box-shadow: 5px 5px 5px #888888;">
+                            {% if user.signature == None %}
+                                <p style="margin-top: 5px;">编辑个性签名</p>
+                            {% else %}
+                                <p style="margin-top: 5px;">{{ user.signature }}</p>
+                            {% endif %}
+                            <h1>{{ user.username }}</h1>
+                            <div class="alert alert-info" style="width: 360px;">
+                                <p>生日: {{ user.birthday }}</p>
+                                <p>邮箱: {{ user.email }}</p>
+                                <p>手机号: {{ user.phone }}</p>
+                                <p>所在地: {{ user.location }}</p>
+                            </div>
+                            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">修改个人资料</button>
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form role="form" method="post" enctype="multipart/form-data" >
+                                        {% csrf_token %}
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title" id="myModalLabel">修改个人资料</h4>
+                                            </div>
+                                            <div class="modal-body" style="text-align: left">
+                                                <div class="form-group">
+                                                    <label for="signature">切换头像:</label><input type="file"
+                                                                                               id="avatar" name="avatar"
+                                                                                               placeholder="换个头像"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="signature">编辑个性签名:</label><input type="text"
+                                                                                                 class="form-control"
+                                                                                                 id="signature" name="signature"
+                                                                                                 placeholder="编辑个性签名" value="{{ user.signature }}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="birthday">生日:</label><input type="date"
+                                                                                            class="form-control"
+                                                                                            id="birthday" name="birthday"
+                                                                                            placeholder="生日" value="{{ birthday }}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="location">所在地:</label><input type="text"
+                                                                                             class="form-control"
+                                                                                             id="location" name="location"
+                                                                                             placeholder="所在地" value="{{ user.location }}"/>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="submit" class="btn btn-primary">修改</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class=" col-md-4 column"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

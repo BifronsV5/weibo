@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+    作者空间
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-4 column">
+                    </div>
+                    <div class="col-md-4 column">
+                        <div style="text-align: center;">
+                            <img src="/media/{{ author_.avatar }}" style="width: 120px;height: 120px;border-radius: 60px;box-shadow: 5px 5px 5px #888888;">
+                            {% if author_.signature == None %}
+                                <p style="margin-top: 5px;">编辑个性签名</p>
+                            {% else %}
+                                <p style="margin-top: 5px;">{{ author_.signature }}</p>
+                            {% endif %}
+                            <h1>{{ author_.username }}</h1>
+                            <div class="alert alert-info" style="width: 360px;">
+                                <p>生日: {{ author_.birthday }}</p>
+                                <p>邮箱: {{ author_.email }}</p>
+                                <p>手机号: {{ author_.phone }}</p>
+                                <p>所在地: {{ author_.location }}</p>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-sm"><a href="/private?to_user_id={{ author_.id }}" style="color: whitesmoke">私信</a>
+                            </button>
+                        </div>
+                    </div>
+                    <div class=" col-md-4 column">
+                        {% if author_.id == request.session.user.userid %}
+                        {% elif attention == 0 %}
+                            <button type="button" class="btn btn-primary btn-sm" value="{{ author_.id }}" id="submit">关注</button>
+                        {% else %}
+                            <button type="button" class="btn btn-primary btn-sm" value="{{ author_.id }}" id="submit">取消关注</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#submit').click(function () {
+            var id = $(this).attr('value');
+            $.ajax({
+                    url: '{% url 'attention' %}',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'id': id
+                    },
+                    datatype: 'json',
+                    type: 'post',
+                    success: function (data) {
+                        location.reload();
+                        if (data.length > 20) {
+                            location.href = '/login/'
+                        } else {
+                            alert(data);
+                        }
+                    },
+                    error: function (err) {
+                        console.log('错误信息' + err);
+                    }
+                }
+            )
+        })
+    </script>
+{% endblock %}

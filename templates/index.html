@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block add %}
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background: snow;
+        }
+
+        .like {
+            font-size: 22px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .cs {
+            color: #f00;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    首页
+{% endblock %}
+{% block header %}
+    <script typet="text/javascript"></script>
+    <script>
+        $(function () {
+            $(".like").click(function () {
+                $(this).toggleClass('cs');
+            })
+        })
+    </script>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-8 column">
+                        <img src="{% static 'images/logo.png' %}" style="width:240px
+                        ;height:120px;float: left;border-radius: 30px;">
+                        <p style="float: left;font-size: 60px;font-family: 'DejaVu Sans',serif; font-weight:bold; margin-top: 10px;margin-left: 50px;">Elphan</p>
+                    </div>
+                    <div class="col-md-4 column">
+                        <ul class="nav nav-tabs" style="margin-top: 30px;">
+                            <li class="active"><a href="{% url 'index' %}">首页</a></li>
+                            {% if 'user' in request.session %}
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        {{ request.session.user.username }}<span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="{% url 'center' %}">个人中心</a></li>
+                                        <li><a href="{% url 'release' %}">发布信息</a></li>
+                                        <li><a href="{% url 'attention_list' %}">关注列表</a></li>
+                                        <li><a href="{% url 'collection_list' %}">收藏列表</a></li>
+                                        <li><a href="{% url 'private_list' %}">私信列表</a></li>
+                                        <li><a href="{% url 'history' %}">我的历史查看</a></li>
+                                        <li><a href="{% url 'my_release' %}">我的发布</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{% url 'quit' %}">退出</a></li>
+                            {% else %}
+                                <li><a href="{% url 'login' %}">登录</a></li>
+                                <li><a href="{% url 'register' %}">注册</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        {% for foo in pagi %}
+                            <div class="alert alert-warning">
+                                <button type="button" class="btn btn-primary btn-sm" id="submit" style="float: right"><a
+                                        href="/release_info?release_id={{ foo.id }}"
+                                        style="color: white">进入</a>
+                                </button>
+                                <div class="content{{ foo.id }}">
+                                </div>
+                                <div style="margin-top:5px;">
+
+                                    <img src="/media/{{ foo.user.avatar }}" style="width: 30px;height: 30px;border-radius: 15px">
+                                    <span style="margin-left: 20px;"><a href="/author?author_id={{ foo.user_id }}">{{ foo.user }}</a></span><span
+                                        style="float: right;margin-right: 30px;">{{ foo.datatime }}</span>
+                                </div>
+                                <div class="news{{ foo.id }}" style="display: none">
+                                    {{ foo.content }}
+                                </div>
+                                <script>
+                                    $(".content{{ foo.id }}").html($(".news{{ foo.id }}").text());
+                                </script>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-2 column">
+        </div>
+        <div class="col-md-8 column">
+            <div style="text-align: center;">
+                <ul class="pagination pagination-lg">
+                    {% if  pagi.previous_page_number > 0 %}
+                        <li>
+                            <a href="?page={{ pagi.previous_page_number }}" aria-label="Previous">
+                                &laquo;
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page_num in page_list %}
+                        {% if page_num == pagi.number %}
+                            <li class="active"><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if pagi.has_next %}
+                        <li>
+                            <a href="?page={{ pagi.next_page_number }}" aria-label="Next">
+                                &raquo;
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2 column">
+        </div>
+    </div>
+{% endblock %}

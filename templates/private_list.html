@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+    私信列表
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-3 column"></div>
+                    <div class="col-md-6 column">
+                        <div class="list-group" style="margin-top: 30px;">
+                            <a class="list-group-item active">
+                                <h4 class="list-group-item-heading">
+                                    私信列表
+                                </h4>
+                            </a>
+                            {% for foo in private %}
+                                <a class="list-group-item" style="height:60px;" href="/reply?from_user_id={{ foo.id }}">
+                                    <img src="/media/{{ foo.avatar }}" style="width: 30px;height: 30px;border-radius: 15px;float: left">
+                                    <p class="list-group-item-text" style="float: left;margin-left: 30px;margin-top: 7px;">
+                                        {{ foo }}
+                                    </p>
+                                    <button type="button" class="btn btn-primary btn-sm" id="submit" style="margin-left: 300px;">回复</button>
+                                </a>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-3 column"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

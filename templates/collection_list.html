@@ -1,0 +1,74 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+    收藏列表
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <h3 style="margin-left: 30px;">收藏</h3>
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        {% for foo in pagi %}
+                            <div class="alert alert-warning">
+                                <button type="button" class="btn btn-primary btn-sm" id="submit" style="float: right"><a
+                                        href="/release_info?release_id={{ foo.release.id }}"
+                                        style="color: white">进入</a>
+                                </button>
+                                <div class="content{{ foo.release.id }}">
+                                </div>
+                                <div style="margin-top:5px;">
+
+                                    <img src="/media/{{ foo.release.user.avatar }}" style="width: 30px;height: 30px;border-radius: 15px">
+                                    <span style="margin-left: 20px;"><a
+                                            href="/author?author_id={{ foo.release.user_id }}">{{ foo.release.user }}</a></span><span
+                                        style="float: right;margin-right: 30px;">{{ foo.release.datatime }}</span>
+                                </div>
+                                <div class="news{{ foo.release.id }}" style="display: none">
+                                    {{ foo.release.content }}
+                                </div>
+                                <script>
+                                    $(".content{{ foo.release.id }}").html($(".news{{ foo.release.id }}").text());
+                                </script>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-2 column">
+        </div>
+        <div class="col-md-8 column">
+            <div style="text-align: center;">
+                <ul class="pagination pagination-lg">
+                    {% if  pagi.previous_page_number > 0 %}
+                        <li>
+                            <a href="?page={{ pagi.previous_page_number }}" aria-label="Previous">
+                                &laquo;
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page_num in page_list %}
+                        {% if page_num == pagi.number %}
+                            <li class="active"><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                        {% else %}
+                            <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if pagi.has_next %}
+                        <li>
+                            <a href="?page={{ pagi.next_page_number }}" aria-label="Next">
+                                &raquo;
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-2 column">
+        </div>
+    </div>
+{% endblock %}

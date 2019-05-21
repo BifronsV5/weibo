@@ -1,0 +1,183 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}
+    发布详情
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        <div class="alert alert-warning">
+                            <div style="float: right">
+                                <p>
+                                    {% if collection == 0 %}
+                                        <button type="button" class="btn btn-primary btn-sm" id="collection" style="float: right;color: white;"
+                                                value="{{ release_id }}"><span
+                                                class="glyphicon glyphicon-star-empty"></span>收藏
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-primary btn-sm" id="collection" style="float: right;color: white;"
+                                                value="{{ release_id }}"><span
+                                                class="glyphicon glyphicon-star-empty"></span>取消收藏
+                                        </button>
+                                    {% endif %}
+                                </p>
+                                <p>
+                                    {% if like.first.status == False or lenLike == 0 %}
+                                        <button type="button" class="btn btn-primary btn-sm" id="like" style="float: right;margin-top: 4px; color: white"
+                                                value="{{ release_id }}"><span
+                                                class="glyphicon glyphicon-thumbs-up"></span>点赞
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-primary btn-sm" id="like" style="float: right;margin-top: 4px; color: white"
+                                                value="{{ release_id }}"><span
+                                                class="glyphicon glyphicon-thumbs-up"></span>取消点赞
+                                        </button>
+                                    {% endif %}
+
+                                </p>
+
+                            </div>
+                            <div class="content">
+                            </div>
+                            <div style="margin-top:5px;">
+                                <img src="/media/{{ release.user.avatar }}" style="width: 30px;height: 30px;border-radius: 15px">
+                                <span style="margin-left: 20px;"><a href="/author?author_id={{ release.user_id }}">{{ release.user }}</a></span><span
+                                    style="float: right;margin-right: 30px;">{{ release.datatime }}</span>
+                            </div>
+                            <div class="news" style="display: none">
+                                {{ release.content }}
+                            </div>
+                            <script>
+                                $(".content").html($(".news").text());
+                            </script>
+                        </div>
+                        {% for foo in pagi %}
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    {{ foo.info }}
+                                </div>
+                                <div class="panel-footer">
+                                    <span><img src="/media/{{ foo.user.avatar }}"
+                                               style="width: 30px;height: 30px;border-radius: 15px"></span><span
+                                        style="margin-left: 20px;">{{ foo.user }}</span><span
+                                        style="float: right;margin-right: 30px;">{{ foo.datetime }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row clearfix">
+                            <div class="col-md-2 column">
+                            </div>
+                            <div class="col-md-8 column">
+                                <div style="text-align: center;">
+                                    <ul class="pagination pagination-lg">
+                                        {% if  pagi.previous_page_number > 0 %}
+                                            <li>
+                                                <a href="?page={{ pagi.previous_page_number }}" aria-label="Previous">
+                                                    &laquo;
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% for page_num in page_list %}
+                                            {% if page_num == pagi.number %}
+                                                <li class="active"><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                                            {% else %}
+                                                <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if pagi.has_next %}
+                                            <li>
+                                                <a href="?page={{ pagi.next_page_number }}" aria-label="Next">
+                                                    &raquo;
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-2 column">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">评论</label>
+                            <textarea class="form-control" rows="3" style="resize:none" id="info"></textarea>
+                            <button type="button" class="btn btn-default" id="submit" style="margin-top: 12px;">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#submit').click(function () {
+            var info = $('#info').val();
+            $.ajax({
+                url: '{% url 'comment' %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'info': info,
+                    'release_id': '{{ release_id }}',
+                },
+                datatype: 'json',
+                type: 'post',
+                success: function (data) {
+                    location.reload();
+                    if (data.length > 20) {
+                        location.href = '/login/'
+                    } else {
+                        alert(data);
+                    }
+                },
+                error: function (err) {
+                    console.log('错误信息' + err);
+                }
+            })
+        })
+    </script>
+    <script>
+        $('#collection').click(function () {
+            $.ajax({
+                url: '{% url 'collection' %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'release_id': '{{ release_id }}',
+                },
+                datatype: 'json',
+                type: 'post',
+                success: function (data) {
+                    location.reload();
+                    if (data.length > 20) {
+                        location.href = '/login/'
+                    } else {
+                        alert(data);
+                    }
+                },
+                error: function (err) {
+                    console.log('错误信息' + err);
+                }
+            })
+        })
+    </script>
+    <script>
+        $('#like').click(function () {
+            var info = $(this).attr('value');
+            $.ajax({
+                url: '{% url 'like' %}',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'release_id': '{{ release_id }}',
+                },
+                datatype: 'json',
+                type: 'post',
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (err) {
+                    console.log('错误信息' + err);
+                }
+            })
+        })
+    </script>
+{% endblock %}
